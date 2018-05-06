@@ -5,4 +5,10 @@ Install [ofxPhyllotaxis](https://github.com/edap/ofxPhyllotaxis) to your OpenFra
 
 `npm run build:OF`
 
+`npm run monit` In a separate terminal to see processes logs.
+
 `npm start`
+
+`npm stop`
+
+`npm run kill` To kill pm2 daemon entirely.
