@@ -5,8 +5,6 @@ import validate from '../utils/validate'
 
 const Question = (props) => {
   const { handleSubmit, question, categories, page} = props;
-  // console.log(categories);
-  // props.emitter.emit('thing', {cool:'coool'});
 
   function renderCategories() {
     return categories.map(({id, name, score}) =>{

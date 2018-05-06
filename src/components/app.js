@@ -3,12 +3,44 @@ import {reduxForm} from 'redux-form';
 import mitt from 'mitt'
 import Question from './question';
 import validate from "../utils/validate";
+import three from "./threeApp";
 
 let emitter = mitt();
+three.start(emitter);
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.child = React.createRef();
+
+    emitter.on('drag', x => {
+      const xYes = 100 + (x/8*100);
+      const xNo = 100 - (x/8*100);
+      const yes = document.querySelector('.Yes');
+      const no = document.querySelector('.No');
+      yes.style.height = `${xYes}px`;
+      yes.style.width = `${xYes}px`;
+      no.style.height = `${xNo}px`;
+      no.style.width = `${xNo}px`;
+
+      const { page, questions } = this.state;
+      if(x > 1.2) {
+        this.props.change(questions[page].name, "yes");
+      }
+      if(x < -1.2) {
+        this.props.change(questions[page].name, "no");
+      }
+    });
+    emitter.on('dragEnd', e => {
+      const { page, questions } = this.state;
+      const values = this.child.current.values;
+      console.log(values);
+      console.log(values[questions[page].name]);
+      if(values[questions[page].name]){
+        this.nextPage(this.child.current.values);
+      }
+    });
+
     this.nextPage = this.nextPage.bind(this);
     this.previousPage = this.previousPage.bind(this);
     this.state = {
@@ -144,7 +176,7 @@ class App extends Component {
       page: newPage,
       categories: updatedCategories
     }, () => {
-      // send data out to Viz App
+      // send data out to Three App
       emitter.emit('setState', this.state);
     });
   }
@@ -157,16 +189,12 @@ class App extends Component {
     const { page, questions, categories } = this.state;
     const question = questions[page];
     return (<React.Fragment>
-        <Question onSubmit={this.nextPage} question={question} categories={categories} page={page} emitter={emitter} />
+        <Question ref={this.child} onSubmit={this.nextPage} question={question} categories={categories} page={page} emitter={emitter} />
       </React.Fragment>
     )
   }
 }
 
-emitter.on('setState', e => console.log('setState', e) );
-emitter.on('thing', e => console.log('thing', e) );
-
-// export default App;
 export default reduxForm({
   form: 'LPCodeTest',
   destroyOnUnmount: false,

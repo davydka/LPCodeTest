@@ -1,0 +1,74 @@
+canvas,
+body,
+div {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.container {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    z-index: 1;
+    position: absolute;
+    top:0;
+    left:0;
+    border: 1px solid black;
+    /*background: white;*/
+    width: 1080px;
+    height: 720px;
+    pointer-events: none;
+}
+
+.next {
+    display: none;
+}
+
+h3 {
+    color: white;
+    text-align: center;
+    font-size: 40px;
+}
+
+.Yes input,
+.No input {
+    /*display: none;*/
+}
+
+.Yes label,
+.No label {
+}
+
+.Yes,
+.No {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 120px;
+    border-radius: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.Yes {
+    background: green;
+    right: 0;
+}
+
+.No {
+    background: red;
+    left: 0;
+}
+.threeContainer {
+    z-index: 0;
+    position: absolute;
+    top:0;
+    left:0;
+    width: 1080px;
+    height: 720px;
+}
+
+.threeContainer canvas {
+    position: absolute;
+    top:0;
+    left: 0;
+}
