@@ -7,3 +7,6 @@ npm-debug.log
 *.iml
 /.idea
 
+OF/bin
+OF/obj
+!OF/**/.gitkeep

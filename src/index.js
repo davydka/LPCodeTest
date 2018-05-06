@@ -1,26 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import ReduxPromise from 'redux-promise';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+// import ReduxPromise from "redux-promise";
 
 import reducers from './reducers';
+import App from './components/app';
 
-import Question from './components/question';
-import Home from './components/home';
+const logger = store => next => action => {
+  const result = next(action);
+  const form = store.getState().form.LPCodeTest;
+  if(form.values) {
+    // console.log(form.values);
+  }
+  return result
+};
 
-const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+const createStoreWithMiddleware = applyMiddleware(logger)(createStore);
+// const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 ReactDOM.render(
-	<Provider store={createStoreWithMiddleware(reducers)}>
-		<BrowserRouter>
-			<React.Fragment>
-				<Switch>
-					<Route path="/question" component={Question} />
-					<Route path="/" component={Home} />
-				</Switch>
-			</React.Fragment>
-		</BrowserRouter>
-	</Provider>
-	, document.querySelector('.container'));
+  <Provider store={createStoreWithMiddleware(reducers)}>
+    <App />
+  </Provider>
+  , document.querySelector('.container'));
