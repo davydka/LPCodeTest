@@ -4,7 +4,7 @@ import renderField from './renderField'
 import validate from '../utils/validate'
 
 const Question = (props) => {
-  const { handleSubmit, question, categories, page} = props;
+  const { handleSubmit, question, categories, page, showPic} = props;
 
   function renderCategories() {
     return categories.map(({id, name, score}) =>{
@@ -20,7 +20,10 @@ const Question = (props) => {
       <div>
         <button type="submit" className="next">Next</button>
       </div>
-      {page !== 0 && renderCategories()}
+      <div className="categories">
+        {page !== 0 && renderCategories()}
+      </div>
+      {showPic && <div id='picture'>todo: user picture shown here for 5 sec</div>}
     </form>
   )
 };

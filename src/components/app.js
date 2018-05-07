@@ -8,10 +8,39 @@ import three from "./threeApp";
 let emitter = mitt();
 three.start(emitter);
 
+navigator.requestMIDIAccess()
+  .then(onMIDISuccess, onMIDIFailure);
+
+let midi = null;
+let outputs = [];
+function onMIDISuccess(midiAccess) {
+  midi = midiAccess;
+  const iter = midiAccess.outputs.values();
+  for (let i = iter.next(); i && !i.done; i = iter.next()) {
+    outputs.push(i.value);
+  }
+  sendCC(0, 0);
+  sendCC(1, 0);
+  sendCC(2, 0);
+  sendCC(3, 0);
+  sendCC(4, 0);
+}
+
+function onMIDIFailure() {
+  console.log('Could not access your MIDI devices.');
+}
+
+function sendCC(ccNum, ccVal) {
+  const val = 64 + ccVal;
+  const message = [176, ccNum, val];
+  outputs[0].send( message );
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.child = React.createRef();
+    this.timeout = null;
 
     emitter.on('drag', x => {
       const xYes = 100 + (x/8*100);
@@ -34,8 +63,6 @@ class App extends Component {
     emitter.on('dragEnd', e => {
       const { page, questions } = this.state;
       const values = this.child.current.values;
-      console.log(values);
-      console.log(values[questions[page].name]);
       if(values[questions[page].name]){
         this.nextPage(this.child.current.values);
       }
@@ -45,6 +72,7 @@ class App extends Component {
     this.previousPage = this.previousPage.bind(this);
     this.state = {
       page: 0,
+      showPic: false,
       categories: [
         { id: 0, score: 0, name: 'Income Tax'},
         { id: 1, score: 0, name: 'Public Health'},
@@ -153,12 +181,12 @@ class App extends Component {
     }
   }
   nextPage(values) {
-    // console.log(this);
     const { page, categories, questions } = this.state;
     const answer = values[questions[page].name];
     const answerValues = questions[page][answer];
     const updatedCategories = categories.map((category, index) => {
       category.score = category.score + answerValues[index].score;
+      sendCC(index, category.score);
       return category;
     });
 
@@ -172,12 +200,17 @@ class App extends Component {
       document.location.reload();
     }
 
+    clearTimeout(this.timeout);
     this.setState({
       page: newPage,
+      showPic: newPage !== 0,
       categories: updatedCategories
     }, () => {
       // send data out to Three App
       emitter.emit('setState', this.state);
+      this.timeout = setTimeout(() => {
+        this.setState({showPic: false})
+      }, 5000)
     });
   }
 
@@ -186,10 +219,10 @@ class App extends Component {
   }
 
   render() {
-    const { page, questions, categories } = this.state;
+    const { page, questions, categories, showPic } = this.state;
     const question = questions[page];
     return (<React.Fragment>
-        <Question ref={this.child} onSubmit={this.nextPage} question={question} categories={categories} page={page} emitter={emitter} />
+        <Question ref={this.child} onSubmit={this.nextPage} question={question} categories={categories} page={page} showPic={showPic} />
       </React.Fragment>
     )
   }

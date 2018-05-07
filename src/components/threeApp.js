@@ -16,21 +16,15 @@ const three = {
     const container = document.querySelector('.threeContainer');
     this.emitter = appEmitter;
     console.log('three start');
-    this.emitter.on('setState', e => console.log('three setState', e) );
+    // this.emitter.on('setState', e => console.log('three setState', e) );
 
     renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(1080, 720);
-    // renderer.autoClear = false;
     container.appendChild(renderer.domElement);
 
     scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0xff0505 );
-
-    /*
-    const light = new THREE.AmbientLight();
-    scene.add(light);
-    */
 
     const light1 = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.7);
     scene.add(light1);

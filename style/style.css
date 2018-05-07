@@ -28,6 +28,12 @@ h3 {
     font-size: 40px;
 }
 
+.categories {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+
 .Yes input,
 .No input {
     /*display: none;*/
@@ -71,4 +77,13 @@ h3 {
     position: absolute;
     top:0;
     left: 0;
+}
+
+#picture {
+    position: absolute;
+    bottom: 0;
+    right:0;
+    width: 100px;
+    height: 120px;
+    background: lightblue;
 }

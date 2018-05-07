@@ -6,8 +6,8 @@ void ofApp::setup(){
     gui.setup();
     gui.setPosition(5, 40);
     gui.add(degree.setup("degree", 137.5, 130.00, 140.00));
-    gui.add(spread.setup("spread", 11, 2, 40));
-    gui.add(extrude.setup("extrude", 0.3, 0.01, 0.90));
+    gui.add(spread.setup("spread", 6, 2, 40));
+    gui.add(extrude.setup("extrude", 0.6, 0.01, 0.90));
     light.setup();
     light.setPosition(-100, 200,0);
     masterColor = ofFloatColor::red;
@@ -16,11 +16,27 @@ void ofApp::setup(){
     for(int i = 0;  i < nCubes;i++){
         children.push_back(ofBoxPrimitive(5,5,5));
     }
+
+    width = ofGetWidth();
+    height = ofGetHeight();
+
+    // ofSetLogLevel(OF_LOG_VERBOSE);
+    midiIn.listPorts();
+    midiIn.openPort(0);
+    midiIn.addListener(this);
+    midiIn.ignoreTypes(false, false, false);
+    midiIn.setVerbose(true);
+    q0 = 64;
+    q1 = 64;
+    q2 = 64;
+    q3 = 64;
+    q4 = 64;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    float rad = ofDegToRad(degree);
+    degreeCount = degreeCount + 0.01;
+    float rad = ofDegToRad(degreeCount);
     for (int i = 0;  i < nCubes;i++) {
         ofVec3f pos;
         if (selectedType == "simple") {
@@ -36,6 +52,7 @@ void ofApp::update(){
         }
         children[i].setPosition(pos);
     }
+
 }
 
 //--------------------------------------------------------------
@@ -53,6 +70,28 @@ void ofApp::draw(){
         secondMaterial.end();
     }
     camera.end();
+
+    ofSetColor(0);
+    /*
+    text << "Received: " << ofxMidiMessage::getStatusString(midiMessage.status);
+    ofDrawBitmapString(text.str(), 20, 20);
+    text.str(""); // clear
+    */
+
+    ofSetColor(ofColor(148, 0, 211));
+    ofDrawRectangle(width/2, 120, ofMap(q0 - 64, -64, 64, -(width/2 - 40), (width/2 - 40)), 16);
+
+    ofSetColor(ofColor(75, 0, 130));
+    ofDrawRectangle(width/2, 140, ofMap(q1 - 64, -64, 64, -(width/2 - 40), (width/2 - 40)), 16);
+
+    ofSetColor(ofColor(0, 0, 255));
+    ofDrawRectangle(width/2, 160, ofMap(q2 - 64, -64, 64, -(width/2 - 40), (width/2 - 40)), 16);
+
+    ofSetColor(ofColor(0, 255, 0));
+    ofDrawRectangle(width/2, 180, ofMap(q3 - 64, -64, 64, -(width/2 - 40), (width/2 - 40)), 16);
+
+    ofSetColor(ofColor(255, 255, 0));
+    ofDrawRectangle(width/2, 200, ofMap(q4 - 64, -64, 64, -(width/2 - 40), (width/2 - 40)), 16);
 }
 
 void ofApp::maybeDrawGui(){
@@ -79,16 +118,47 @@ void ofApp::keyPressed(int key){
             hideGui = !hideGui;
             break;
         case 49:
-            selectedType = "conical";
+            // selectedType = "conical";
             break;
         case 50:
-            selectedType = "apple";
+            // selectedType = "apple";
             break;
         case 51:
-            selectedType = "simple";
+            // selectedType = "simple";
             break;
         default:
             break;
+    }
+}
+//--------------------------------------------------------------
+void ofApp::exit() {
+
+    // clean up
+    midiIn.closePort();
+    midiIn.removeListener(this);
+}
+
+//--------------------------------------------------------------
+void ofApp::newMidiMessage(ofxMidiMessage& msg) {
+    // make a copy of the latest message
+    midiMessage = msg;
+    // cout << midiMessage.control << endl;
+    // cout << ofHexToInt(ofToString(midiMessage.value)) << endl;
+
+    if(midiMessage.control == 0) {
+       q0 = midiMessage.value;
+    }
+    if(midiMessage.control == 1) {
+       q1 = midiMessage.value;
+    }
+    if(midiMessage.control == 2) {
+       q2 = midiMessage.value;
+    }
+    if(midiMessage.control == 3) {
+       q3 = midiMessage.value;
+    }
+    if(midiMessage.control == 4) {
+       q4 = midiMessage.value;
     }
 }
 
