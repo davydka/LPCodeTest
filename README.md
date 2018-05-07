@@ -47,7 +47,7 @@ questions: [
 ]
 ```
 My approach to the challenge was to focus on the front-end build-out in the following way:
-1) Build a most-viable-product questionnaire using react and redux-forms. Completely un-styled.
+1) Build a minimum-viable-product questionnaire using react and redux-forms. Completely un-styled.
 2) Build a rich interface using Three.js and OpenFrameworks.
 3) Provide build and monitoring solutions.
 
