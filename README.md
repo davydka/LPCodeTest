@@ -9,6 +9,8 @@ Developed and tested on OSX, for now. Using a variety of tools including:
 * Midi
 * NewRelic
 
+![Midi Setup 2](app.png)
+
 ## Approach
 The objective of this exercise is to build a questionnaire. It consists of a series of sequential questions as well as several categories. 
 Each question has a yes or no answer. The UI should use a drag and drop interface and visualize the results of the user's answers. 
